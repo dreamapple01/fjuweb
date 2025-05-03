@@ -145,7 +145,7 @@
     </head>
     <body style="background-color:#F9FFFF; font-family: Microsoft JhengHei;">
         <div id="back">
-            <a style= "font-family:微軟正黑體;color:#7B7B7B; text-decoration:none; font-weight: 600;" id="back" href="../homepage_manager.html">返回 Back</a>
+            <a style= "font-family:微軟正黑體;color:#7B7B7B; text-decoration:none; font-weight: 600;" id="back" href="homepage_manager.php">返回 Back</a>
             <a style= "font-family:微軟正黑體;color:#7B7B7B; text-decoration:none; font-weight: 600; float:right;" id="back" href="./manager_historyWeb_English.php">英文版</a>
         </div>
         <div class="up_div">

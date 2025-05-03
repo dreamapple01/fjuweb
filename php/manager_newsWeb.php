@@ -153,7 +153,7 @@
     </head>
     <body style="background-color:#F9FFFF; font-family: Microsoft JhengHei;">
         <div id="back">
-            <a style= "font-family:微軟正黑體;color:#7B7B7B; text-decoration:none; font-weight: 600;" id="back" href="../homepage_manager.html">返回 Back</a>
+            <a style= "font-family:微軟正黑體;color:#7B7B7B; text-decoration:none; font-weight: 600;" id="back" href="homepage_manager.php">返回 Back</a>
         </div>
         <div class="up_div">
             <h1 style="display: inline-block;">最新消息資料管理</h1>

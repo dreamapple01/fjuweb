@@ -58,7 +58,7 @@
                                 $_SESSION['member_id'] = $row['id'];
                                 $_SESSION['user'] = $row['user'];
                                 $_SESSION['user_id'] = $row['user_id'];
-                                echo '<meta http-equiv=REFRESH CONTENT=0;url=../homepage_manager.html>';
+                                echo '<meta http-equiv=REFRESH CONTENT=0;url=homepage_manager.php>';
                         }                                               
                 }
         }
