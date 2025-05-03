@@ -35,7 +35,7 @@
         //如果欄位為空值
         if ($username == null || $password == null) {
                 echo "<script>alert('欄位不得為空值，請再檢查!')</script>";
-                echo '<meta http-equiv=REFRESH CONTENT=0;url=../../招生入口網站/register.html>';
+                echo '<meta http-equiv=REFRESH CONTENT=0;url=../register.html>';
         }
         //如果欄位不為空值
         else{
@@ -48,10 +48,11 @@
                 //有這個會員
                 else{   
                         //如果密碼錯誤
-                        if($row['username'] == $username && $row['password'] != $password){
+                        if ($row['username'] == $username && !password_verify($password, $row['password'])) {
                                 echo "<script>alert('密碼錯誤!請重新登入!')</script>";
                                 echo '<meta http-equiv=REFRESH CONTENT=0;url=../register.html>';
-                        }
+                            }
+                            
                         //密碼正確
                         else{
                                 // echo "<script>alert('管理者登入成功!')</script>";  

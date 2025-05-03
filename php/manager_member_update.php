@@ -1,5 +1,5 @@
 <?php
-	include "managerSQL.php";
+	include "connect.php";
 
     $ID = $_GET['id'];
 
@@ -183,13 +183,13 @@
             <div class="upper-right">
                 <h1>🖊 帳號管理 | 修改</h1>
             </div>
-            <form action="" method="post" name="formAdd" class="formAdd" id="formAdd" style="color:#787475; font-weight:600; ">
+            <form action="" method="post" name="formAdd" class="formAdd" id="formAdd" style="color:#787475; font-weight:600;" onsubmit="return confirmUpdate()">
                 <text class="input_text">ID</text>
-                <input type="text" name="fjuId" id="fjuId" placeholder="請輸入ID" value=" <?php echo $id ?>" style="margin-left:8%; margin-top:5%;"><br/>
+                <input type="text" name="fjuId" id="fjuId" placeholder="請輸入ID" value="<?php echo trim($id); ?>" style="margin-left:8%; margin-top:5%;"><br/>
                 <text class="input_text">帳號</text>
-                <input type="text" name="username" id="username"  placeholder="請輸入帳號" value=" <?php echo $username ?>" style="margin-left:5%; margin-top:5%;"><br/>
+                <input type="text" name="username" id="username"  placeholder="請輸入帳號" value="<?php echo trim($username); ?>" style="margin-left:5%; margin-top:5%;"><br/>
                 <text class="input_text">密碼</text>
-                <input type="text" name="password" id="password"placeholder="請輸入密碼" value="<?php echo $password ?>"  style="margin-left:5%; margin-top:5%;"><br/>
+                <input type="text" name="password" id="password"placeholder="請輸入密碼" value=""  style="margin-left:5%; margin-top:5%;"><br/>
                 <div id="btn" class="btn">
 
 					<input type="hidden" name="action" value="update">
@@ -201,39 +201,50 @@
 </html>
 
 
+<script>
+function confirmUpdate() {
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    if (!username || !password) {
+        alert("帳號與密碼不得為空！");
+        return false;
+    }
+
+    return confirm(`請確認是否修改以下帳號資料？\n\n帳號：${username}\n密碼：${password}`);
+}
+</script>
+
 <?php
  if (isset($_POST["action"]) && $_POST["action"] == 'update') {
 
     $newUsername = $_POST['username'];
-    $newPassword = $_POST['password'];
+    $plainPassword = $_POST['password'];
 
-    $sql_query = "UPDATE member_table SET username = ?, password = ? WHERE id = ?";
-    
-    $stmt = $mysqli->prepare($sql_query);
+    if (!empty($plainPassword)) {
+        // 若密碼欄有填，就進行加密後更新
+        $hashedPassword = password_hash($plainPassword, PASSWORD_DEFAULT);
+        $sql_query = "UPDATE member_table SET username = ?, password = ? WHERE id = ?";
+        $stmt = $mysqli->prepare($sql_query);
+        $stmt->bind_param("ssi", $newUsername, $hashedPassword, $ID);
+    } else {
+        // 若沒填密碼，只更新帳號
+        $sql_query = "UPDATE member_table SET username = ? WHERE id = ?";
+        $stmt = $mysqli->prepare($sql_query);
+        $stmt->bind_param("si", $newUsername, $ID);
+    }
 
     if ($stmt === false) {
         die("參數化查詢準備失敗：" . $mysqli->error);
     }
 
-    // 綁定參數
-    $stmt->bind_param("sss", $newUsername, $newPassword, $ID);
-
-    // 執行查詢
     if ($stmt->execute()) {
-        //導航回首頁
-        $url = "manager_memberWeb.php";
-        echo "<script type='text/javascript'>";
-        echo "window.location.href='$url'";
-        echo "</script>"; 
+        echo "<script>window.location.href='manager_memberWeb.php';</script>";
     } else {
         echo "失敗：" . $stmt->error;
     }
 
-    // 關閉查詢
     $stmt->close();
+}
 
-     // mysqli_query($db_link,$sql_query);
-     // $db_link->close();
-     
- }
  ?>

@@ -1,6 +1,6 @@
 <?php
     session_start();
-    include("managerSQL.php");
+    include("connect.php");
 
     // 修改 SQL 查詢來正確關聯修改者的資訊
     $sql_query = "SELECT h.*, m.user AS modifier_name 

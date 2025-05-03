@@ -1,6 +1,6 @@
 <?php
     session_start();
-    include("managerSQL.php");
+    include("connect.php");
 
     $sql_query = "SELECT n.*, m.user AS modifier_name 
               FROM news n

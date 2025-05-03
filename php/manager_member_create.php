@@ -146,8 +146,8 @@
             <div class="upper-right">
                 <h1>🖊 帳號管理 | 新增</h1>
             </div>
-            <form action="" method="post" name="formAdd" class="formAdd" id="formAdd" style="color:#787475; font-weight:600; ">
-                <text class="input_text">帳號</text>
+            <form action="" method="post" name="formAdd" class="formAdd" id="formAdd"
+            style="color:#787475; font-weight:600;" onsubmit="return confirmSubmit()">                <text class="input_text">帳號</text>
                 <input type="text" name="username" id="username" placeholder="請輸入帳號" style="margin-left:5%; margin-top:5%;"><br/>
                 <text class="input_text">密碼</text>
                 <input type="text" name="password" id="password" placeholder="請輸入密碼" style="margin-left:5%; margin-top:5%;"><br/>
@@ -160,19 +160,44 @@
         </div>
     </body>
 </html>
+<script>
+function confirmSubmit() {
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
 
+    if (!username || !password) {
+        alert("請完整輸入帳號與密碼！");
+        return false;
+    }
+
+    return confirm(`請確認是否新增以下帳號：\n\n帳號：${username}\n密碼：${password}`);
+}
+</script>
 <?php
-//先檢查請求來源是否是我們上面創建的 form
-if (isset($_POST["action"])&&($_POST["action"] == "add")) {
+if (isset($_POST["action"]) && ($_POST["action"] == "add")) {
 
-    //引入檔，負責連結資料庫
-    include("managerSQL.php");
+    include("connect.php");
 
-    //取得請求過來的資料
     $username = $_POST['username'];
-    $password = $_POST['password'];
+    $password_plain = $_POST['password'];
 
-    //INSERT INTO 就是新建一筆資料進哪個表的哪個欄位
+    // 先檢查帳號是否已存在
+    $check_sql = "SELECT COUNT(*) as count FROM member_table WHERE username = ?";
+    $check_stmt = $mysqli->prepare($check_sql);
+    $check_stmt->bind_param("s", $username);
+    $check_stmt->execute();
+    $check_result = $check_stmt->get_result();
+    $check_row = $check_result->fetch_assoc();
+
+    if ($check_row['count'] > 0) {
+        echo "<script>alert('此帳號已存在！請使用其他帳號名稱');</script>";
+        exit;
+    }
+
+    // 密碼加密
+    $password_hashed = password_hash($password_plain, PASSWORD_DEFAULT);
+
+    // 新增帳號
     $sql_query = "INSERT INTO member_table (username, password) VALUES (?, ?)";
     $stmt = $mysqli->prepare($sql_query);
 
@@ -180,24 +205,16 @@ if (isset($_POST["action"])&&($_POST["action"] == "add")) {
         die("參數化查詢準備失敗：" . $mysqli->error);
     }
 
-    // 綁定參數
-    $stmt->bind_param("ss", $username, $password);
+    $stmt->bind_param("ss", $username, $password_hashed);
 
-    // 執行查詢
     if ($stmt->execute()) {
-        //導航回首頁
         $url = "manager_memberWeb.php";
-        echo "<script type='text/javascript'>";
-        echo "window.location.href='$url'";
-        echo "</script>"; 
+        echo "<script>window.location.href='$url';</script>";
     } else {
         echo "新增資料失敗：" . $stmt->error;
     }
 
-    // 關閉查詢
     $stmt->close();
-
-    // //對資料庫執行查訪的動作
-    // mysqli_query($db_link,$sql_query);
+    $check_stmt->close();
 }
 ?>

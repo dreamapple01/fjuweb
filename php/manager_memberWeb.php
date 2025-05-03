@@ -1,6 +1,6 @@
 <?php
     
-    include("managerSQL.php");
+    include("connect.php");
 
     $sql_query = "SELECT * FROM member_table ORDER BY id ASC";
     $result = $mysqli->query($sql_query);
@@ -166,7 +166,7 @@
                 echo "<td style='text-align: center; vertical-align:middle;'>".$row_result['password']."</td>";
                 // echo "<td style='text-align: center; vertical-align:middle;'>".$row_result['email']."</td>";
                 echo "<td style='text-align: center; vertical-align:middle;'><a href='manager_member_update.php?id=".$row_result['id']."'>修改 </a>";
-                echo "<a href='manager_member_delete.php?id=".$row_result['id']."'>刪除</a></td>";
+                echo "<a href='manager_member_delete.php?id=".$row_result['id']."' onclick=\"return confirm('確定要刪除帳號：".$row_result['username']." 嗎？')\">刪除</a></td>";
                 echo "</tr>";
             }
         ?>

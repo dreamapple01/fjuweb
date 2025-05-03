@@ -2,7 +2,7 @@
 
     //取得資料的ID
     $Id = $_GET['id'];
-    include ('managerSQL.php');
+    include ('connect.php');
 
     //將此ID的資料從資料庫刪除
     $sql_query = "DELETE FROM member_table WHERE id = ?";
