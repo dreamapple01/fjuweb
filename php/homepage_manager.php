@@ -38,7 +38,7 @@ $permission = $_SESSION['permission'] ?? '';
         <button class="left_btn font-weight-bold" onclick="window.location.href='manager_historyWeb.php'">輔仁大事記後台管理</button>
         <button class="url_btn font-weight-bold" onclick="window.location.href='manager_url.php'">各系所網站後台管理</button>
         
-        <?php if ($permission === 'top'): ?>
+        <?php if ($permission === '管理者'): ?>
             <button class="account_btn" onclick="window.location.href='manager_memberWeb.php'">帳號管理</button>
         <?php endif; ?>
 

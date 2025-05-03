@@ -1,5 +1,13 @@
-<?php
 
+<?php
+    session_start();
+
+    // 如果session裡沒有儲存member_id，重新導向至登入頁面
+    if (!isset($_SESSION['member_id'])) {
+        header("Location: ../register.html");
+        exit;
+    }
+    
     //取得資料的ID
     $Id = $_GET['id'];
     include ('managerSQL.php');

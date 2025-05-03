@@ -1,7 +1,10 @@
 <?php
     session_start();
-	include "managerSQL.php";
-
+	include "connect.php";
+    if (!isset($_SESSION['member_id'])) {
+        header("Location: ../register.html");
+        exit;
+    }
     $ID = $_GET['id'];
 
     $sql_query = "SELECT * FROM history_english WHERE id = ?";

@@ -1,7 +1,11 @@
 <?php
     session_start();
-	include "managerSQL.php";
-
+	include "connect.php";
+    // 如果session裡沒有儲存member_id，重新導向至登入頁面
+    if (!isset($_SESSION['member_id'])) {
+        header("Location: ../register.html");
+        exit;
+    }
 	$ID = $_GET['id'];
 
     $sql_query = "SELECT * FROM history WHERE id = ?";
