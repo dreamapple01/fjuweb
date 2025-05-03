@@ -4,35 +4,22 @@
     $ID = $_GET['id'];
 
     $sql_query = "SELECT * FROM member_table WHERE id = ?";
-
     $stmt = $mysqli->prepare($sql_query);
-
-    // 綁定參數
     $stmt->bind_param("i", $ID);
-
-    // 執行查詢
     if ($stmt->execute()) {
-        // 取得查詢結果
         $result = $stmt->get_result();
-
         if ($result->num_rows === 1) {
-            // 得到此筆資料的id、year、event
             $row_result = $result->fetch_assoc();
-            $id = $row_result['id'];
             $username = $row_result['username'];
-            $password = $row_result['password'];
+            $user = $row_result['user'];
+            $email = $row_result['email'];
         } else {
-            // 沒有符合的資料
             echo "找不到對應資料。";
         }
     } else {
         echo "查詢失敗：" . $stmt->error;
     }
-
-    // 關閉查詢
     $stmt->close();
-
-
 ?>
 
 
@@ -42,46 +29,44 @@
 		<title>帳號管理 | 修改</title>
         <link rel="icon" type="image/x-icon" href="../picture/輔大校徽/0純校徽.gif">
 		    <style type="text/css">
-		    	.login_form{
+		    .login_form {
             width: 500px;
             color: black;
             height: 500px;
             text-align: center;
-            box-shadow:0px 2px 5px 1px #cccccc;
+            box-shadow: 0px 2px 5px 1px #cccccc;
             position: absolute;
-            /*top: 5%;*/
-            /*left: 32%;*/
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
         }
-        #btn input{
-            width:73%; 
-            height:6%;
+        #btn input {
+            width: 73%;
+            height: 6%;
             font-size: 18px;
-            background-color:#D3CBF0; 
-            color:#FFFFFF; 
-            font-weight:600;
+            background-color: #D3CBF0;
+            color: #FFFFFF;
+            font-weight: 600;
             margin-left: 5%;
-            border:1.5px solid #D3CBF0;
-        }  
-        .input_text{
+            border: 1.5px solid #D3CBF0;
+        }
+        .input_text {
             font-size: 20px;
             margin-left: 5%;
         }
-        .formAdd{
-            margin-top:10%;
+        .formAdd {
+            margin-top: 10%;
         }
-        .formAdd input{
-            width:60%; 
-            height:12%;
-            border:1.5px solid  #D8D8D8;
+        .formAdd input {
+            width: 60%;
+            height: 12%;
+            border: 1.5px solid #D8D8D8;
         }
-        .upper-right h1{
-            color:#000000; 
-            height:30px; 
-            font-size:36px; 
-            margin-top:10%;
+        .upper-right h1 {
+            color: #000000;
+            height: 30px;
+            font-size: 36px;
+            margin-top: 10%;
         }
 
         @media (max-width: 720px) { /*螢幕寬度於470-720px的時候*/
@@ -176,62 +161,57 @@
 		    </style>
 	</head>
 	<body background="../picture/帳號後臺底圖.jpg" style="background-size: 100% 100%;">
-        <div id="back">
-            <a style= "font-family:微軟正黑體;color:#7B7B7B; text-decoration:none; font-weight: 600;" id="back" href="manager_memberWeb.php">返回 Back</a>
+    <div id="back">
+        <a style="font-family:微軟正黑體;color:#7B7B7B; text-decoration:none; font-weight: 600;" href="manager_memberWeb.php">返回 Back</a>
+    </div>
+    <div class="login_form" style="z-index: 1; background-color: #FFFFFF;">
+        <div class="upper-right">
+            <h1>🖊 帳號管理 | 修改</h1>
         </div>
-		<div class="login_form" style="z-index: 1; background-color: #FFFFFF;">
-            <div class="upper-right">
-                <h1>🖊 帳號管理 | 修改</h1>
+        <form action="" method="post" name="formAdd" class="formAdd" id="formAdd" style="color:#787475; font-weight:600;" onsubmit="return confirmUpdate()">
+            <text class="input_text">帳號</text>
+            <input type="text" name="username" id="username" placeholder="請輸入帳號" value="<?php echo trim($username); ?>" style="margin-left:5%; margin-top:0%;"><br/>
+            <text class="input_text">姓名</text>
+            <input type="text" name="user" id="user" placeholder="請輸入姓名" value="<?php echo trim($user); ?>" style="margin-left:5%; margin-top:2%;"><br/>
+            <text class="input_text">信箱</text>
+            <input type="text" name="email" id="email" placeholder="請輸入信箱" value="<?php echo trim($email); ?>" style="margin-left:5%; margin-top:2%;"><br/>
+            <text class="input_text">密碼</text>
+            <input type="text" name="password" id="password" placeholder="若需修改密碼請輸入" style="margin-left:5%; margin-top:2%;"><br/>
+            <div id="btn" class="btn">
+                <input type="hidden" name="action" value="update">
+                <input type="submit" name="button" value="修改資料" style="margin-top:5%;">
             </div>
-            <form action="" method="post" name="formAdd" class="formAdd" id="formAdd" style="color:#787475; font-weight:600;" onsubmit="return confirmUpdate()">
-                <text class="input_text">ID</text>
-                <input type="text" name="fjuId" id="fjuId" placeholder="請輸入ID" value="<?php echo trim($id); ?>" style="margin-left:8%; margin-top:5%;"><br/>
-                <text class="input_text">帳號</text>
-                <input type="text" name="username" id="username"  placeholder="請輸入帳號" value="<?php echo trim($username); ?>" style="margin-left:5%; margin-top:5%;"><br/>
-                <text class="input_text">密碼</text>
-                <input type="text" name="password" id="password"placeholder="請輸入密碼" value=""  style="margin-left:5%; margin-top:5%;"><br/>
-                <div id="btn" class="btn">
-
-					<input type="hidden" name="action" value="update">
-					<input type="submit" name="button" value="修改資料" style="margin-top:8%;">
-                </div>
-            </form>
-        </div>
-	</body>
+        </form>
+    </div>
+</body>
 </html>
 
 
 <script>
 function confirmUpdate() {
     const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
-
-    if (!username || !password) {
-        alert("帳號與密碼不得為空！");
-        return false;
-    }
-
-    return confirm(`請確認是否修改以下帳號資料？\n\n帳號：${username}\n密碼：${password}`);
+    const user = document.getElementById("user").value.trim();
+    const email = document.getElementById("email").value.trim();
+    return confirm(`請確認是否修改以下帳號資料？\n\n帳號：${username}\n姓名：${user}\n信箱：${email}`);
 }
 </script>
 
 <?php
- if (isset($_POST["action"]) && $_POST["action"] == 'update') {
-
+if (isset($_POST["action"]) && $_POST["action"] == 'update') {
     $newUsername = $_POST['username'];
+    $newUser = $_POST['user'];
+    $newEmail = $_POST['email'];
     $plainPassword = $_POST['password'];
 
     if (!empty($plainPassword)) {
-        // 若密碼欄有填，就進行加密後更新
         $hashedPassword = password_hash($plainPassword, PASSWORD_DEFAULT);
-        $sql_query = "UPDATE member_table SET username = ?, password = ? WHERE id = ?";
+        $sql_query = "UPDATE member_table SET username = ?, user = ?, email = ?, password = ? WHERE id = ?";
         $stmt = $mysqli->prepare($sql_query);
-        $stmt->bind_param("ssi", $newUsername, $hashedPassword, $ID);
+        $stmt->bind_param("ssssi", $newUsername, $newUser, $newEmail, $hashedPassword, $ID);
     } else {
-        // 若沒填密碼，只更新帳號
-        $sql_query = "UPDATE member_table SET username = ? WHERE id = ?";
+        $sql_query = "UPDATE member_table SET username = ?, user = ?, email = ? WHERE id = ?";
         $stmt = $mysqli->prepare($sql_query);
-        $stmt->bind_param("si", $newUsername, $ID);
+        $stmt->bind_param("sssi", $newUsername, $newUser, $newEmail, $ID);
     }
 
     if ($stmt === false) {
@@ -246,5 +226,4 @@ function confirmUpdate() {
 
     $stmt->close();
 }
-
- ?>
+?>

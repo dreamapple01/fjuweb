@@ -150,27 +150,31 @@
             <p style="text-align:right; margin-right:12.5%; margin-top:-2.5%;">目前帳號數量：<?php echo $total_records;?></p>
         
         
-        <div class="line">11</div>
-        <table border="1" align = "center" class="table" cellpadding="5">
-            <tr>
-                <th>ID</th>
-                <th>帳號</th>
-                <th>密碼</th>
-                <!-- <th>Email</th> -->
-            </tr>
-        <?php
-            while($row_result = mysqli_fetch_assoc($result)) {
-                echo "<tr>";
-                echo "<td style='text-align: center; vertical-align:middle;'>".$row_result['id']."</td>";
-                echo "<td style='text-align: center; vertical-align:middle;'>".$row_result['username']."</td>";
-                echo "<td style='text-align: center; vertical-align:middle;'>".$row_result['password']."</td>";
-                // echo "<td style='text-align: center; vertical-align:middle;'>".$row_result['email']."</td>";
-                echo "<td style='text-align: center; vertical-align:middle;'><a href='manager_member_update.php?id=".$row_result['id']."'>修改 </a>";
-                echo "<a href='manager_member_delete.php?id=".$row_result['id']."' onclick=\"return confirm('確定要刪除帳號：".$row_result['username']." 嗎？')\">刪除</a></td>";
-                echo "</tr>";
-            }
-        ?>
-        </table>
+            <div class="line">11</div>
+            <table border="1" align="center" class="table" cellpadding="5">
+                <tr>
+                    <th>權限</th>
+                    <th>姓名</th>
+                    <th>帳號</th>
+                    <th>信箱</th>
+                    <th>操作</th>
+                </tr>
+            <?php
+                while($row_result = mysqli_fetch_assoc($result)) {
+                    echo "<tr>";
+                    echo "<td style='text-align: center; vertical-align:middle;'>" . $row_result['permission'] . "</td>";
+                    echo "<td style='text-align: center; vertical-align:middle;'>" . $row_result['user'] . "</td>";
+                    echo "<td style='text-align: center; vertical-align:middle;'>" . $row_result['username'] . "</td>";
+                    echo "<td style='text-align: center; vertical-align:middle;'>" . $row_result['email'] . "</td>";
+                    echo "<td style='text-align: center; vertical-align:middle;'>";
+                    echo "<a href='manager_member_update.php?id=" . $row_result['id'] . "'>修改 </a>";
+                    echo "<a href='manager_member_delete.php?id=" . $row_result['id'] . "' onclick=\"return confirm('確定要刪除帳號：" . $row_result['username'] . " 嗎？')\">刪除</a>";
+                    echo "</td>";
+                    echo "</tr>";
+                }
+            ?>
+            </table>
+
         <button class="btn_add" onclick="window.location.href='manager_member_create.php'">新增帳號</a>
     </body>
 </html>

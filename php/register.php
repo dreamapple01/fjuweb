@@ -59,6 +59,7 @@
                                 $_SESSION['member_id'] = $row['id'];
                                 $_SESSION['user'] = $row['user'];
                                 $_SESSION['user_id'] = $row['user_id'];
+                                $_SESSION['permission'] = $row['permission'];  // 你需要有一欄 permission 權限等級
                                 echo '<meta http-equiv=REFRESH CONTENT=0;url=homepage_manager.php>';
                         }                                               
                 }
