@@ -24,10 +24,12 @@
 
     // 執行查詢
     if ($stmt->execute()) {
-        header("Location: manager_memberWeb.php");
-    } else {
-        echo "失敗：" . $stmt->error;
+        header("Location: manager_memberWeb.php?msg=deleted");
+        exit;
     }
+    else {
+        echo "失敗：" . $stmt->error;
+    }    
     
     // 關閉查詢
     $stmt->close();

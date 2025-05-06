@@ -165,6 +165,13 @@ if (!isset($_SESSION['member_id'])) {
             <input type="text" name="password" id="password" placeholder="請輸入密碼" style="margin-left:5%; margin-top:2%;"><br/>
             <text class="input_text">信箱</text>
             <input type="text" name="email" id="email" placeholder="請輸入信箱" style="margin-left:5%; margin-top:2%;"><br/>
+            <text class="input_text">權限</text>
+            <select name="permission" id="permission" style="width: 60%; margin-left:5%; margin-top:2%; height: 30px;">
+                <option value="">請選擇權限</option>
+                <option value="管理者">管理者</option>
+                <option value="使用者">使用者</option>
+            </select><br/>
+
             <div id="btn" class="btn">
                 <input type="hidden" name="action" value="add">
                 <input type="submit" name="button" value="新增資料" style="margin-top:3%;"><br/>
@@ -180,14 +187,15 @@ function confirmSubmit() {
     const user = document.getElementById("user").value.trim();
     const password = document.getElementById("password").value.trim();
     const email = document.getElementById("email").value.trim();
+    const permission = document.getElementById("permission").value.trim();
 
-    if (!username || !user || !password || !email) {
-        alert("請完整輸入帳號、姓名、密碼與信箱！");
+    if (!username || !user || !password || !email || !permission) {
+        alert("請完整輸入帳號、姓名、密碼、信箱與權限！");
         return false;
     }
 
-    return confirm(`請確認是否新增以下帳號：\n\n帳號：${username}\n姓名：${user}\n信箱：${email}`);
-}
+    return confirm(`請確認是否新增以下帳號：\n\n帳號：${username}\n姓名：${user}\n信箱：${email}\n權限：${permission}`);
+    }
 </script>
 
 <?php
@@ -216,17 +224,21 @@ if (isset($_POST["action"]) && $_POST["action"] == "add") {
     $password_hashed = password_hash($password_plain, PASSWORD_DEFAULT);
 
     // 新增資料
-    $sql_query = "INSERT INTO member_table (username, user, password, email) VALUES (?, ?, ?, ?)";
+    $permission = $_POST['permission'];
+    $sql_query = "INSERT INTO member_table (username, user, password, email, permission) VALUES (?, ?, ?, ?, ?)";
     $stmt = $mysqli->prepare($sql_query);
 
     if ($stmt === false) {
         die("參數化查詢準備失敗：" . $mysqli->error);
     }
-
-    $stmt->bind_param("ssss", $username, $user, $password_hashed, $email);
-
+    
+    $stmt->bind_param("sssss", $username, $user, $password_hashed, $email, $permission);  // ✅ 只保留這行
+    
     if ($stmt->execute()) {
-        echo "<script>window.location.href='manager_memberWeb.php';</script>";
+        echo "<script>
+            alert('新增成功！');
+            window.location.href='manager_memberWeb.php';
+        </script>";    
     } else {
         echo "新增資料失敗：" . $stmt->error;
     }

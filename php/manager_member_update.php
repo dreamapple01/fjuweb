@@ -21,6 +21,8 @@
             $username = $row_result['username'];
             $user = $row_result['user'];
             $email = $row_result['email'];
+            $permission = $row_result['permission']; 
+
         } else {
             echo "找不到對應資料。";
         }
@@ -185,6 +187,13 @@
             <input type="text" name="email" id="email" placeholder="請輸入信箱" value="<?php echo trim($email); ?>" style="margin-left:5%; margin-top:2%;"><br/>
             <text class="input_text">密碼</text>
             <input type="text" name="password" id="password" placeholder="若需修改密碼請輸入" style="margin-left:5%; margin-top:2%;"><br/>
+            <text class="input_text">權限</text>
+            <select name="permission" id="permission" style="width: 60%; margin-left:5%; margin-top:2%; height: 30px;">
+                <option value="">請選擇權限</option>
+                <option value="管理者">管理者</option>
+                <option value="使用者">使用者</option>
+            </select><br/>
+
             <div id="btn" class="btn">
                 <input type="hidden" name="action" value="update">
                 <input type="submit" name="button" value="修改資料" style="margin-top:5%;">
@@ -200,7 +209,8 @@ function confirmUpdate() {
     const username = document.getElementById("username").value.trim();
     const user = document.getElementById("user").value.trim();
     const email = document.getElementById("email").value.trim();
-    return confirm(`請確認是否修改以下帳號資料？\n\n帳號：${username}\n姓名：${user}\n信箱：${email}`);
+    const permission = document.getElementById("permission").value.trim();
+    return confirm(`請確認是否修改以下帳號資料？\n\n帳號：${username}\n姓名：${user}\n信箱：${email}\n權限：${permission}`);
 }
 </script>
 
@@ -210,17 +220,19 @@ if (isset($_POST["action"]) && $_POST["action"] == 'update') {
     $newUser = $_POST['user'];
     $newEmail = $_POST['email'];
     $plainPassword = $_POST['password'];
+    $newPermission = $_POST['permission'];
 
     if (!empty($plainPassword)) {
         $hashedPassword = password_hash($plainPassword, PASSWORD_DEFAULT);
-        $sql_query = "UPDATE member_table SET username = ?, user = ?, email = ?, password = ? WHERE id = ?";
+        $sql_query = "UPDATE member_table SET username = ?, user = ?, email = ?, password = ?, permission = ? WHERE id = ?";
         $stmt = $mysqli->prepare($sql_query);
-        $stmt->bind_param("ssssi", $newUsername, $newUser, $newEmail, $hashedPassword, $ID);
+        $stmt->bind_param("sssssi", $newUsername, $newUser, $newEmail, $hashedPassword, $newPermission, $ID);
     } else {
-        $sql_query = "UPDATE member_table SET username = ?, user = ?, email = ? WHERE id = ?";
+        $sql_query = "UPDATE member_table SET username = ?, user = ?, email = ?, permission = ? WHERE id = ?";
         $stmt = $mysqli->prepare($sql_query);
-        $stmt->bind_param("sssi", $newUsername, $newUser, $newEmail, $ID);
+        $stmt->bind_param("ssssi", $newUsername, $newUser, $newEmail, $newPermission, $ID);  
     }
+    
 
     if ($stmt === false) {
         die("參數化查詢準備失敗：" . $mysqli->error);

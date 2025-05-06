@@ -148,11 +148,21 @@
         </style>
     </head>
     <body style="background-color:#F9FFFF; font-family: Microsoft JhengHei;">
+        <?php
+            if (isset($_GET['msg']) && $_GET['msg'] === 'deleted') {
+                echo "<script>alert('已成功刪除帳號');</script>";
+            }
+        ?>
+
+
+
         <div id="back">
             <a style= "font-family:微軟正黑體;color:#7B7B7B; text-decoration:none; font-weight: 600;" id="back" href="homepage_manager.php">返回 Back</a>
         </div>
         <div class="up_div">
             <h1 style="display: inline-block;">後台帳號管理</h1>
+          
+
         </div>
             <p style="text-align:right; margin-right:12.5%; margin-top:-2.5%;">目前帳號數量：<?php echo $total_records;?></p>
         
