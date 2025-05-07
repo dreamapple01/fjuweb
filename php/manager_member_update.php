@@ -1,13 +1,12 @@
 <?php
     session_start();
 
-    // 如果session裡沒有儲存member_id，重新導向至登入頁面
     if (!isset($_SESSION['member_id'])) {
         header("Location: ../register.html");
         exit;
     }
-    
-	include "connect.php";
+
+    include "connect.php";
 
     $ID = $_GET['id'];
 
@@ -21,8 +20,7 @@
             $username = $row_result['username'];
             $user = $row_result['user'];
             $email = $row_result['email'];
-            $permission = $row_result['permission']; 
-
+            $permission = $row_result['permission'];
         } else {
             echo "找不到對應資料。";
         }
@@ -32,187 +30,125 @@
     $stmt->close();
 ?>
 
-
 <html>
-	<head>
-		<meta charset="UTF-8" />
-		<title>帳號管理 | 修改</title>
-        <link rel="icon" type="image/x-icon" href="../picture/輔大校徽/0純校徽.gif">
-		    <style type="text/css">
-		    .login_form {
+<head>
+    <meta charset="UTF-8" />
+    <title>帳號管理 | 修改</title>
+    <link rel="icon" type="image/x-icon" href="../picture/輔大校徽/0純校徽.gif">
+    <style type="text/css">
+        body {
+            background-image: url('../picture/帳號後臺底圖.jpg');
+            background-size: cover;
+            margin: 0;
+            font-family: 微軟正黑體;
+        }
+        .login_form {
             width: 500px;
-            color: black;
-            height: 500px;
-            text-align: center;
-            box-shadow: 0px 2px 5px 1px #cccccc;
+            max-width: 90%;
+            background-color: #fff;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            border-radius: 8px;
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
         }
-        #btn input {
-            width: 73%;
-            height: 6%;
-            font-size: 18px;
-            background-color: #D3CBF0;
-            color: #FFFFFF;
-            font-weight: 600;
-            margin-left: 5%;
-            border: 1.5px solid #D3CBF0;
-        }
-        .input_text {
-            font-size: 20px;
-            margin-left: 5%;
+        .login_form h1 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 20px;
         }
         .formAdd {
-            margin-top: 10%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
-        .formAdd input {
-            width: 60%;
-            height: 12%;
-            border: 1.5px solid #D8D8D8;
+        .formAdd label {
+            text-align: left;
+            font-weight: bold;
+            color: #555;
         }
-        .upper-right h1 {
-            color: #000000;
-            height: 30px;
-            font-size: 36px;
-            margin-top: 10%;
+        .formAdd input[type="text"], .formAdd select {
+            padding: 8px 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
-
-        @media (max-width: 720px) { /*螢幕寬度於470-720px的時候*/
-            .login_form{
-                width: 70%;
-                color: black;
-                height: 65%;
-                text-align: center;
-                box-shadow:0px 2px 5px 1px #cccccc;
-                position: absolute;
-                /*top: 7%;*/
-                justify-content: center; /* 垂直置中 */
-                align-items: center;    
-                /*left: 15%;*/
-            }
-            #btn input{
-                width:73%; 
-                height:6%;
-                font-size: 15px;
-                background-color:#D3CBF0; 
-                color:#FFFFFF; 
-                font-weight:600;
-                margin-left: 5%;
-                border:1.5px solid #D3CBF0;
-                margin: 2%;
-            }  
-            .input_text{
-                font-size: 18px;
-                margin-left: 5%;
-            }
-            .formAdd{
-                margin-top:10%;
-            }
-            .formAdd input{
-                width:60%; 
-                height:12%;
-                border:1.5px solid  #D8D8D8;
-                margin: 1%;
-            }
-            .upper-right h1{
-                color:#000000; 
-                height:28px; 
-                font-size:32px; 
-                margin-top:10%;
-            }
+        .formAdd select {
+            background-color: #fff;
         }
-
-        @media (max-width: 470px) { /*螢幕寬度小於470px的時候*/
-            .login_form{
-                width: 70%;
-                color: black;
-                height: 50%;
-                text-align: center;
-                box-shadow:0px 2px 5px 1px #cccccc;
-                position: absolute;
-                /*top: 7%;*/
-                justify-content: center; /* 垂直置中 */
-                align-items: center;    
-                /*left: 15%;*/
-            }
-            #btn input{
-                width:73%; 
-                height:7%;
-                font-size: 14px;
-                background-color:#D3CBF0; 
-                color:#FFFFFF; 
-                font-weight:600;
-                margin-left: 5%;
-                border:1.5px solid #D3CBF0;
-                margin: 2%;
-            }  
-            .input_text{
-                font-size: 15px;
-                margin-bottom: 5%;
-            }
-            .formAdd{
-                margin-top:10%;
-            }
-            .formAdd input{
-                width:60%; 
-                height:12%;
-                border:1.5px solid  #D8D8D8;
-                margin: 1%;
-            }
-            .upper-right h1{
-                color:#000000; 
-                height:28px; 
-                font-size:25px; 
-                margin-top:10%;
-            }
+        #btn input[type="submit"] {
+            margin-top: 10px;
+            width: 100%;
+            padding: 10px;
+            background-color:rgb(190, 187, 235);
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
         }
-		    </style>
-	</head>
-	<body background="../picture/帳號後臺底圖.jpg" style="background-size: 100% 100%;">
+        #btn input[type="submit"]:hover {
+            background-color:rgb(169, 165, 224);
+        }
+        #back {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+        }
+        #back a {
+            color: #7B7B7B;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
     <div id="back">
-        <a style="font-family:微軟正黑體;color:#7B7B7B; text-decoration:none; font-weight: 600;" href="manager_memberWeb.php">返回 Back</a>
+        <a href="manager_memberWeb.php">返回 Back</a>
     </div>
-    <div class="login_form" style="z-index: 1; background-color: #FFFFFF;">
-        <div class="upper-right">
-            <h1>🖊 帳號管理 | 修改</h1>
-        </div>
-        <form action="" method="post" name="formAdd" class="formAdd" id="formAdd" style="color:#787475; font-weight:600;" onsubmit="return confirmUpdate()">
-            <text class="input_text">帳號</text>
-            <input type="text" name="username" id="username" placeholder="請輸入帳號" value="<?php echo trim($username); ?>" style="margin-left:5%; margin-top:0%;"><br/>
-            <text class="input_text">姓名</text>
-            <input type="text" name="user" id="user" placeholder="請輸入姓名" value="<?php echo trim($user); ?>" style="margin-left:5%; margin-top:2%;"><br/>
-            <text class="input_text">信箱</text>
-            <input type="text" name="email" id="email" placeholder="請輸入信箱" value="<?php echo trim($email); ?>" style="margin-left:5%; margin-top:2%;"><br/>
-            <text class="input_text">密碼</text>
-            <input type="text" name="password" id="password" placeholder="若需修改密碼請輸入" style="margin-left:5%; margin-top:2%;"><br/>
-            <text class="input_text">權限</text>
-            <select name="permission" id="permission" style="width: 60%; margin-left:5%; margin-top:2%; height: 30px;">
-                <option value="">請選擇權限</option>
-                <option value="管理者">管理者</option>
-                <option value="使用者">使用者</option>
-            </select><br/>
+    <div class="login_form">
+        <h1>🖊 帳號管理 | 修改</h1>
+        <form method="post" name="formAdd" class="formAdd" onsubmit="return confirmUpdate()">
+            <label for="username">帳號</label>
+            <input type="text" name="username" id="username" value="<?php echo htmlspecialchars($username); ?>">
 
-            <div id="btn" class="btn">
+            <label for="user">姓名</label>
+            <input type="text" name="user" id="user" value="<?php echo htmlspecialchars($user); ?>">
+
+            <label for="email">信箱</label>
+            <input type="text" name="email" id="email" value="<?php echo htmlspecialchars($email); ?>">
+
+            <label for="password">密碼</label>
+            <input type="text" name="password" id="password" placeholder="若需修改密碼請輸入">
+
+            <label for="permission">權限</label>
+            <select name="permission" id="permission">
+                <option value="">請選擇權限</option>
+                <option value="管理者" <?php if ($permission == '管理者') echo 'selected'; ?>>管理者</option>
+                <option value="使用者" <?php if ($permission == '使用者') echo 'selected'; ?>>使用者</option>
+            </select>
+
+            <div id="btn">
                 <input type="hidden" name="action" value="update">
-                <input type="submit" name="button" value="修改資料" style="margin-top:5%;">
+                <input type="submit" name="button" value="修改資料">
             </div>
         </form>
     </div>
+
+    <script>
+    function confirmUpdate() {
+        const username = document.getElementById("username").value.trim();
+        const user = document.getElementById("user").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const permission = document.getElementById("permission").value.trim();
+        return confirm(`請確認是否修改以下帳號資料？\n\n帳號：${username}\n姓名：${user}\n信箱：${email}\n權限：${permission}`);
+    }
+    </script>
 </body>
 </html>
-
-
-<script>
-function confirmUpdate() {
-    const username = document.getElementById("username").value.trim();
-    const user = document.getElementById("user").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const permission = document.getElementById("permission").value.trim();
-    return confirm(`請確認是否修改以下帳號資料？\n\n帳號：${username}\n姓名：${user}\n信箱：${email}\n權限：${permission}`);
-}
-</script>
 
 <?php
 if (isset($_POST["action"]) && $_POST["action"] == 'update') {
@@ -232,7 +168,6 @@ if (isset($_POST["action"]) && $_POST["action"] == 'update') {
         $stmt = $mysqli->prepare($sql_query);
         $stmt->bind_param("ssssi", $newUsername, $newUser, $newEmail, $newPermission, $ID);  
     }
-    
 
     if ($stmt === false) {
         die("參數化查詢準備失敗：" . $mysqli->error);
