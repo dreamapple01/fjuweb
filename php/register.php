@@ -1,72 +1,71 @@
-<?php session_start(); ?>
-        <!--上方語法為啟用session，此語法要放在網頁最前方-->
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <?php
-        //連接資料庫
-        //只要此頁面上有用到連接MySQL就要include它
-        include("connect.php");
-        // $slcdb=mysqli_select_db($db_link,"fjuweb");
-        $username = $_POST['username1'];
-        $password = $_POST['password1'];
-        //搜尋資料庫資料
-        // $sql = "SELECT * FROM member_table where username = '$username'";
+session_start();
+// 防止 Session Fixation 攻擊（成功登入後會重新產生）
+session_regenerate_id(true);
 
-        // 使用參數化查詢
-        $sql = "SELECT * FROM member_table WHERE username = ?";
-        $stmt = $mysqli->prepare($sql);
+// 關閉錯誤顯示（正式環境）
+// error_reporting(0); // 若正式環境需要可以加上這行
+// ini_set('display_errors', 0);
+?>
 
-        // 綁定參數
-        $stmt->bind_param("s", $username);
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<?php
+include("connect.php");
 
-        // 執行查詢
-        $stmt->execute();
+// 確保 POST 變數存在
+if (!isset($_POST['username1']) || !isset($_POST['password1'])) {
+    echo "<script>alert('非法操作！')</script>";
+    echo '<meta http-equiv=REFRESH CONTENT=0;url=../register.html>';
+    exit;
+}
 
-        // 取得查詢結果
-        $result = $stmt->get_result();
+// 過濾與限制輸入長度（避免過長造成效能或爆破）
+$username = trim($_POST['username1']);
+$password = trim($_POST['password1']);
 
-        // 處理結果
-        $row = $result->fetch_assoc();
+if (strlen($username) > 50 || strlen($password) > 100) {
+    echo "<script>alert('帳號或密碼長度異常，請重新輸入')</script>";
+    echo '<meta http-equiv=REFRESH CONTENT=0;url=../register.html>';
+    exit;
+}
 
-        // $result=mysqli_query($db_link, $sql);
-        // $row = @mysqli_fetch_row($result);
-        // echo $row;
-        // print_r($row);
+if ($username === "" || $password === "") {
+    echo "<script>alert('欄位不得為空值，請再檢查!')</script>";
+    echo '<meta http-equiv=REFRESH CONTENT=0;url=../register.html>';
+    exit;
+}
 
-        //如果欄位為空值
-        if ($username == null || $password == null) {
-                echo "<script>alert('欄位不得為空值，請再檢查!')</script>";
-                echo '<meta http-equiv=REFRESH CONTENT=0;url=../register.html>';
-        }
-        //如果欄位不為空值
-        else{
-                //如果沒有這個會員
-                // print_r($row);
-                if($row['username'] != $username){
-                        echo "<script>alert('尚未有此帳號 請註冊!')</script>";
-                        echo '<meta http-equiv=REFRESH CONTENT=0;url=../register.html>';
-                }
-                //有這個會員
-                else{   
-                        //如果密碼錯誤
-                        if ($row['username'] == $username && !password_verify($password, $row['password'])) {
-                                echo "<script>alert('密碼錯誤!請重新登入!')</script>";
-                                echo '<meta http-equiv=REFRESH CONTENT=0;url=../register.html>';
-                            }
-                            
-                        //密碼正確
-                        else{
-                                // echo "<script>alert('管理者登入成功!')</script>";  
-                                $_SESSION['member_id'] = $row['id'];
-                                $_SESSION['user'] = $row['user'];
-                                $_SESSION['user_id'] = $row['user_id'];
-                                $_SESSION['permission'] = $row['permission'];  // 你需要有一欄 permission 權限等級
-                                echo '<meta http-equiv=REFRESH CONTENT=0;url=homepage_manager.php>';
-                        }                                               
-                }
-        }
+// 使用參數化查詢
+$sql = "SELECT * FROM member_table WHERE username = ?";
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("s", $username);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
 
+if (!$row) {
+    echo "<script>alert('尚未有此帳號，請註冊!')</script>";
+    echo '<meta http-equiv=REFRESH CONTENT=0;url=../register.html>';
+    exit;
+}
 
-        // 關閉查詢和連線
-        $stmt->close();
-        $mysqli->close();
+// 驗證密碼
+if (!password_verify($password, $row['password'])) {
+    echo "<script>alert('密碼錯誤!請重新登入!')</script>";
+    echo '<meta http-equiv=REFRESH CONTENT=0;url=../register.html>';
+    exit;
+}
+
+// 成功登入，設定 session
+$_SESSION['member_id'] = $row['id'];
+$_SESSION['user'] = htmlspecialchars($row['user'], ENT_QUOTES, 'UTF-8');
+$_SESSION['permission'] = htmlspecialchars($row['permission'], ENT_QUOTES, 'UTF-8');
+
+// 安全導向後台
+header("Location: homepage_manager.php");
+exit;
+
+// 關閉查詢和連線
+$stmt->close();
+$mysqli->close();
 ?>
